@@ -326,7 +326,7 @@ def alexa_play_movie(slots):
   print 'name is'
   print str( slots['MediaName']['value'])   
   m = str(slots['MediaName']['value'])
-  netflixID = kodi.findNetflixID()  
+  netflixID = kodi.findNetflixID(m)  
   if playerid is not None: 
       kodi.watch_netflix()
       return build_alexa_response('Playing %s' % (m))
