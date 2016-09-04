@@ -37,6 +37,11 @@ import re
 import string
 import sys
 
+
+from googleapiclient.discovery import build
+import pprint
+import urllib2
+
 # These are words that we ignore when doing a non-exact match on show names
 STOPWORDS = [
   "a",
@@ -101,6 +106,8 @@ def RPCString(method, params=None):
 def matchHeard(heard, results, lookingFor='label'):
   located = None
   
+  
+  findNetflixID(heard)
   heard_minus_the = remove_the(heard)
   print heard
   sys.stdout.flush()
@@ -436,3 +443,53 @@ def GetVideoPlayStatus():
         cur = '%02d:%02d' % (data['result']['time']['minutes'], data['result']['time']['seconds'])
       return {'state':'play' if speed > 0 else 'pause', 'time':cur, 'total':total, 'pct':data['result']['percentage']}
   return {'state':'stop'}
+  
+  
+def findNetflixID(search_term):
+    #url = 'http://instantwatcher.com/search?q='+title+'&sort=&view=text-synopsis&average_rating=&year='+year+'-'+year+'&runtime=&content_type[]='+seriesIdx+'&language_audio=&layout=none&page=';
+    
+    url = 'http://instantwatcher.com/search?q='+title+'&sort=&view=text-synopsis'
+    response = urllib2.urlopen(url)
+    html = response.read()
+    
+    try: 
+        from BeautifulSoup import BeautifulSoup
+    except ImportError:
+        from bs4 import BeautifulSoup
+    parsed_html = BeautifulSoup(html)
+    #data-netflix-uri="movies/21878564"
+    nextflixID = parsed_html.body.find('a', attrs={'data-netflix-uri' }).text
+    log.info( 'found'+search_term+' at '+ netflixID)
+    return  
+  
+  ##chris additions
+def google_search(search_term,  **kwargs):
+    api_key = 'AIzaSyCqyGjxXAiZkexUaeF1Yx2RAlydPcOWPI0'
+    cse_id = 'Instantwatcher'
+    service = build("customsearch", "v1", developerKey=api_key)
+    res = service.cse().list(q=search_term, cx=cse_id, **kwargs).execute()
+    log.info(res['items'][0])
+    return res['items']
+
+def launch_chrome(url):
+
+    log.info("launch_chrome(%s)" % url)
+    url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
+    SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
+    return
+  
+def watch_netflix(title,netflixid):
+    log.info('watch_netflix(%s)' % netflixid)
+
+    ## THIS METHOD OPENS IN CHROME, NON FULL SCREEN
+
+    #url = 'http://netflix.com/watch/'+netflixid
+    #print url
+    #webbrowser.get(chrome_path).open(url)
+
+    ## THIS METHOD USES KODI CHROME LAUNCHER TO LAUNCH FIREFOX IN KIOSK MODE
+    stringparam = 'http://netflix.com/watch/' + netflixid # rely on launch_chrome to format kiosk tokens as needed
+    launch_chrome(stringparam)
+
+    return send_response_message("Playing, " + title + ", on Netflix",title + " played on Netflix")
+  
