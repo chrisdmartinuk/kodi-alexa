@@ -306,7 +306,8 @@ def alexa_update_audio(slots):
   return build_alexa_response('Updating audio library')
 
 def alexa_pick_random_movie(slots):
-  print str( slots['Movie'])   
+  print 'name is'
+  print str( slots['Movie']['name'])   
   kodi.findNetflixID(str(slots['Movie']['value']))  
   print('Trying to play a random movie')
   sys.stdout.flush()
