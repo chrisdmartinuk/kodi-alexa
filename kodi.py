@@ -464,9 +464,9 @@ def findNetflixID(search_term):
         
         response2 = requests.get(link)
         html2 = response2.text
-        m2 =  re.search('https://www.netflix.com/title/([0-9]*)', html2, flags=re.IGNORECASE )
+        m2 =  re.findall('https://www.netflix.com/title/([0-9]*)', html2, flags=re.IGNORECASE )
         ##m2 =  re.search('.*<header><h1><a href=\"https://www.netflix.com/title/([0-9]*)\"', html2, flags=re.IGNORECASE )
-        netflixID = m2.group(1)
+        netflixID = m2[0]
         print ('netflixID '+netflixID)
         return netflixID
     else:
