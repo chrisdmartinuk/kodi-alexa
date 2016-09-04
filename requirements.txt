@@ -1,6 +1,5 @@
 requests
 gunicorn
 google-api-python-client
-pprint
 urllib2
 BeautifulSoup
