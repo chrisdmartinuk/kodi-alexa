@@ -323,6 +323,7 @@ def alexa_pick_random_movie(slots):
     return build_alexa_response("Couldn't find any movies")
   
 def alexa_play_movie(slots):
+  kodi.findNetflixID(str(slots['Movie']['value']))  
   heard_movie = str(slots['Movie']['value']).lower().translate(None, string.punctuation)
   
   print('Trying to play the movie %s' % (heard_movie))

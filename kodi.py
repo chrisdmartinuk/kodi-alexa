@@ -105,9 +105,7 @@ def RPCString(method, params=None):
 # Match heard string to something in the results
 def matchHeard(heard, results, lookingFor='label'):
   located = None
-  
-  
-  findNetflixID(heard)
+
   heard_minus_the = remove_the(heard)
   print heard
   sys.stdout.flush()
