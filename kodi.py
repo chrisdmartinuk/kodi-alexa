@@ -459,7 +459,8 @@ def findNetflixID(search_term):
     parsed_html = BeautifulSoup(html)
     #data-netflix-uri="movies/21878564"
     nextflixID = parsed_html.body.find('a', attrs={'data-netflix-uri' }).text
-    log.info( 'found'+search_term+' at '+ netflixID)
+    print( 'found'+search_term+' at '+ netflixID)
+    sys.stdout.flush()
     return  
   
   ##chris additions
