@@ -446,7 +446,7 @@ def GetVideoPlayStatus():
 def findNetflixID(search_term):
     #url = 'http://instantwatcher.com/search?q='+title+'&sort=&view=text-synopsis&average_rating=&year='+year+'-'+year+'&runtime=&content_type[]='+seriesIdx+'&language_audio=&layout=none&page=';
     
-    url = 'http://instantwatcher.com/search?q='+title+'&sort=&view=text-synopsis'
+    url = 'http://instantwatcher.com/search?q='+search_term+'&sort=&view=text-synopsis'
     response = urllib2.urlopen(url)
     html = response.read()
     
