@@ -325,8 +325,12 @@ def alexa_pick_random_movie(slots):
 def alexa_play_movie(slots):
   print 'name is'
   print str( slots['MediaName']['value'])   
-  kodi.findNetflixID(str(slots['MediaName']['value']))  
-  heard_movie = str(slots['Movie']['value']).lower().translate(None, string.punctuation)
+  m = str(slots['MediaName']['value'])
+  netflixID = kodi.findNetflixID()  
+  if playerid is not None: 
+      kodi.watch_netflix()
+      return build_alexa_response('Playing %s' % (m))
+  heard_movie = str(m).lower().translate(None, string.punctuation)
   
   print('Trying to play the movie %s' % (heard_movie))
   sys.stdout.flush()

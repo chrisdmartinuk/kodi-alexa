@@ -443,25 +443,35 @@ def GetVideoPlayStatus():
   return {'state':'stop'}
   
   
-def findNetflixID(search_term):
-    #url = 'http://instantwatcher.com/search?q='+title+'&sort=&view=text-synopsis&average_rating=&year='+year+'-'+year+'&runtime=&content_type[]='+seriesIdx+'&language_audio=&layout=none&page=';
-    
-    url = 'http://instantwatcher.com/search?q='+search_term+'&sort=&view=text-synopsis'
-    response = urllib2.urlopen(url)
-    html = response.read()
-    
-    try: 
-        from BeautifulSoup import BeautifulSoup
-    except ImportError:
-        from bs4 import BeautifulSoup
-    parsed_html = BeautifulSoup(html)
-    #data-netflix-uri="movies/21878564"
-    nextflixID = parsed_html.body.find('a', attrs={'data-netflix-uri' }).text
-    print( 'found'+search_term+' at '+ netflixID)
-    sys.stdout.flush()
-    return  
-  
   ##chris additions
+def findNetflixID(search_term):
+    url = 'https://uk.newonnetflix.info/catalogue/search/'+search_term
+    response = requests.get(url)
+    html = response.text
+    
+    #data-netflix-uri="movies/21878564"
+    m =  re.search('Matching Titles: \"'+search_term+'\"</h3><em><strong>([0-9]*) match.*</strong></em>', html, flags=re.IGNORECASE )
+    print ('Matching Titles: \"'+search_term+'\"</h3><em><strong>([0-9]*) match.*</strong></em>')
+    if m is None:
+        print("found none")
+        return None
+    numMatches = int( m.group(1) )
+    print( 'found '+search_term+' with ' +str(numMatches));
+    if numMatches > 0:
+        m =  re.search('(\<a class=\"infopop\" href=\"/info/)([0-9]*)\"\>', html, flags=re.IGNORECASE )
+        link = "https://uk.newonnetflix.info/info/"+m.group(2)
+        print ( 'going to URL '+link)
+        
+        response2 = requests.get(link)
+        html2 = response2.text
+        m2 =  re.search('https://www.netflix.com/title/([0-9]*)', html2, flags=re.IGNORECASE )
+        ##m2 =  re.search('.*<header><h1><a href=\"https://www.netflix.com/title/([0-9]*)\"', html2, flags=re.IGNORECASE )
+        netflixID = m2.group(1)
+        print ('netflixID '+netflixID)
+        return netflixID
+    else:
+        return None
+  
 def google_search(search_term,  **kwargs):
     api_key = 'AIzaSyCqyGjxXAiZkexUaeF1Yx2RAlydPcOWPI0'
     cse_id = 'Instantwatcher'
@@ -487,7 +497,7 @@ def watch_netflix(title,netflixid):
     #webbrowser.get(chrome_path).open(url)
 
     ## THIS METHOD USES KODI CHROME LAUNCHER TO LAUNCH FIREFOX IN KIOSK MODE
-    stringparam = 'http://netflix.com/watch/' + netflixid # rely on launch_chrome to format kiosk tokens as needed
+    stringparam = 'http://netflix.com/title/' + netflixid # rely on launch_chrome to format kiosk tokens as needed
     launch_chrome(stringparam)
 
     return send_response_message("Playing, " + title + ", on Netflix",title + " played on Netflix")
