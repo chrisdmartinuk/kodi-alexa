@@ -22,7 +22,7 @@ def main():
 
 def findNetflixID(search_term):
     
-    url = 'https://flixsearch.io/search/'+search_term.replace(' ','-')+'?subtitle=&language=&country=3&media_type=&sort=popularity-desc'
+    url = 'http://flixsearch.io/search/'+search_term.replace(' ','-')+'?subtitle=&language=&country=3&media_type=&sort=popularity-desc'
     kodi.launch_chrome( url )
         
     #html = response.text
