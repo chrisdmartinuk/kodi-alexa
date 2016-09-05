@@ -603,7 +603,7 @@ INTENTS = [
   ['UpdateVideo', alexa_update_video],
   ['CleanAudio', alexa_clean_audio],
   ['UpdateAudio', alexa_update_audio],
-  ['PlayLatestEpisode', alexa_play_newest_episode]
+  ['PlayLatestEpisode', alexa_play_newest_episode],
   ['SearchNetflix', alexa_search_netflix]
 ]
 
