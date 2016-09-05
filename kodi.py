@@ -432,3 +432,9 @@ def GetVideoPlayStatus():
         cur = '%02d:%02d' % (data['result']['time']['minutes'], data['result']['time']['seconds'])
       return {'state':'play' if speed > 0 else 'pause', 'time':cur, 'total':total, 'pct':data['result']['percentage']}
   return {'state':'stop'}
+  
+  def launch_chrome(url):
+        print 'launch_chrome(%s)' + url
+        url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
+        SendCommand(RPCString('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','properties':[url]}))     
+        return

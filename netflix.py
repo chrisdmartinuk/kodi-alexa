@@ -19,16 +19,11 @@ import kodi
 def main():
     findNetflixID("delete")
     return
-def launch_chrome(url):
-        print 'launch_chrome(%s)' + url
-        url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
-        kodi.SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
-        return
 
 def findNetflixID(search_term):
     
     url = 'https://flixsearch.io/search/'+search_term.replace(' ','-')+'?subtitle=&language=&country=3&media_type=&sort=popularity-desc'
-    launch_chrome( url )
+    kodi.launch_chrome( url )
         
     #html = response.text
     #m =  re.search('Matching Titles: \"'+search_term+'\"</h3><em><strong>([0-9]*) match.*</strong></em>', html, flags=re.IGNORECASE )
