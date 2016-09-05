@@ -565,7 +565,7 @@ def prepare_help_message():
 
 
 def alexa_search_netflix(slots):
-  heard_movie = str(slots['Movie']['value']).lower()
+  heard_movie = str(slots['Show']['value']).lower()
   netflix.findNetflixID( heard_movie )
   return build_alexa_response("Search netflix for "+heard_movie)
   
