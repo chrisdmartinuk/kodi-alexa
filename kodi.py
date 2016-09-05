@@ -2,19 +2,15 @@
 
 """
 The MIT License (MIT)
-
 Copyright (c) 2015 Maker Musings && m0ngr31
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,11 +32,6 @@ import random
 import re
 import string
 import sys
-
-
-from googleapiclient.discovery import build
-import pprint
-import urllib2
 
 # These are words that we ignore when doing a non-exact match on show names
 STOPWORDS = [
@@ -105,7 +96,7 @@ def RPCString(method, params=None):
 # Match heard string to something in the results
 def matchHeard(heard, results, lookingFor='label'):
   located = None
-
+  
   heard_minus_the = remove_the(heard)
   print heard
   sys.stdout.flush()
@@ -441,64 +432,3 @@ def GetVideoPlayStatus():
         cur = '%02d:%02d' % (data['result']['time']['minutes'], data['result']['time']['seconds'])
       return {'state':'play' if speed > 0 else 'pause', 'time':cur, 'total':total, 'pct':data['result']['percentage']}
   return {'state':'stop'}
-  
-  
-  ##chris additions
-def findNetflixID(search_term):
-    url = 'https://uk.newonnetflix.info/catalogue/search/'+search_term
-    response = requests.get(url)
-    html = response.text
-    
-    #data-netflix-uri="movies/21878564"
-    m =  re.search('Matching Titles: \"'+search_term+'\"</h3><em><strong>([0-9]*) match.*</strong></em>', html, flags=re.IGNORECASE )
-    print ('Matching Titles: \"'+search_term+'\"</h3><em><strong>([0-9]*) match.*</strong></em>')
-    if m is None:
-        print("found none")
-        return None
-    numMatches = int( m.group(1) )
-    print( 'found '+search_term+' with ' +str(numMatches));
-    if numMatches > 0:
-        m =  re.search('(\<a class=\"infopop\" href=\"/info/)([0-9]*)\"\>', html, flags=re.IGNORECASE )
-        link = "https://uk.newonnetflix.info/info/"+m.group(2)
-        print ( 'going to URL '+link)
-        
-        response2 = requests.get(link)
-        html2 = response2.text
-        m2 =  re.findall('https://www.netflix.com/title/([0-9]*)', html2, flags=re.IGNORECASE )
-        ##m2 =  re.search('.*<header><h1><a href=\"https://www.netflix.com/title/([0-9]*)\"', html2, flags=re.IGNORECASE )
-        netflixID = m2[0]
-        print ('netflixID '+netflixID)
-        return netflixID
-    else:
-        return None
-  
-def google_search(search_term,  **kwargs):
-    api_key = 'AIzaSyCqyGjxXAiZkexUaeF1Yx2RAlydPcOWPI0'
-    cse_id = 'Instantwatcher'
-    service = build("customsearch", "v1", developerKey=api_key)
-    res = service.cse().list(q=search_term, cx=cse_id, **kwargs).execute()
-    log.info(res['items'][0])
-    return res['items']
-
-def launch_chrome(url):
-
-    log.info("launch_chrome(%s)" % url)
-    url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
-    SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
-    return
-  
-def watch_netflix(title,netflixid):
-    log.info('watch_netflix(%s)' % netflixid)
-
-    ## THIS METHOD OPENS IN CHROME, NON FULL SCREEN
-
-    #url = 'http://netflix.com/watch/'+netflixid
-    #print url
-    #webbrowser.get(chrome_path).open(url)
-
-    ## THIS METHOD USES KODI CHROME LAUNCHER TO LAUNCH FIREFOX IN KIOSK MODE
-    stringparam = 'http://netflix.com/title/' + netflixid # rely on launch_chrome to format kiosk tokens as needed
-    launch_chrome(stringparam)
-
-    return send_response_message("Playing, " + title + ", on Netflix",title + " played on Netflix")
-  
