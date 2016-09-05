@@ -12,13 +12,16 @@ import sys
 from googleapiclient.discovery import build
 import pprint
 
+sys.path += [os.path.dirname(__file__)]
+import kodi
+
 def main():
     findNetflixID("delete")
     return
 def launch_chrome(url):
         print 'launch_chrome(%s)' + url
         url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
-        SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
+        kodi.SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
         return
 
 def findNetflixID(search_term):
