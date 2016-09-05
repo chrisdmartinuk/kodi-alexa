@@ -436,5 +436,5 @@ def GetVideoPlayStatus():
 def launch_chrome(url):
     print 'launch_chrome(%s)' + url
     url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
-    SendCommand(RPCString('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','properties':[url]}))     
+    SendCommand(RPCString('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]}))     
     return
