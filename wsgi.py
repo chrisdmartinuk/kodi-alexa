@@ -34,6 +34,7 @@ import sys
 # Load the kodi.py file from the same directory where this wsgi file is located
 sys.path += [os.path.dirname(__file__)]
 import kodi
+import netflix
 
 # This utility function constructs the required JSON for a full Alexa Skills Kit response
 
@@ -563,6 +564,13 @@ def prepare_help_message():
   return build_alexa_response(help)
 
 
+def alexa_search_netflix(slots):
+  heard_movie = str(slots['Movie']['value']).lower()
+  netflix.findNetflixID( heard_movie )
+  return build_alexa_response("Search netflix for "+heard_movie)
+  
+  
+
 # This maps the Intent names to the functions that provide the corresponding Alexa response.
 
 INTENTS = [
@@ -596,6 +604,7 @@ INTENTS = [
   ['CleanAudio', alexa_clean_audio],
   ['UpdateAudio', alexa_update_audio],
   ['PlayLatestEpisode', alexa_play_newest_episode]
+  ['SearchNetflix', alexa_search_netflix]
 ]
 
 
