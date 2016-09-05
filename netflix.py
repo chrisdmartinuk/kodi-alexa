@@ -15,6 +15,11 @@ import pprint
 def main():
     findNetflixID("delete")
     return
+def launch_chrome(url):
+        print 'launch_chrome(%s)' + url
+        url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
+        SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
+        return
 
 def findNetflixID(search_term):
     
@@ -28,12 +33,6 @@ def findNetflixID(search_term):
     # return None
     #numMatches = int( m.group(1) )
     return
-    
-    def launch_chrome(url):
-        print 'launch_chrome(%s)' + url
-        url = '?kiosk=yes&mode=showSite&stopPlayback=yes&url='+url
-        SendCommand('Addons.ExecuteAddon',{'addonid':'plugin.program.chrome.launcher','params':[url]})     
-        return
 if __name__ == "__main__":
     main()
   
